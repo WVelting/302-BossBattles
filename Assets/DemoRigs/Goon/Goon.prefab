@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40ad3bf9a46cfb743b3aa3d4b25dec08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  raycastLength: 2
 --- !u!1 &1325151783
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,6 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40ad3bf9a46cfb743b3aa3d4b25dec08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  raycastLength: 2
 --- !u!1 &206842652749801385
 GameObject:
   m_ObjectHideFlags: 0
@@ -1371,7 +1373,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84771facbc6207d4780093cfc67c1356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  footLeft: {fileID: 7345122921468386327}
+  footRight: {fileID: 8227590450914122137}
+  footSeparateScalar: -0.2
+  walkSpreadY: 0.4
+  walkSpreadZ: 0.6
+  walkFootSpeed: 5
   walkSpeed: 5
+  velocityY: 0
+  gravity: 20
+  jumpImpulse: 10
 --- !u!1 &3380711307104536278
 GameObject:
   m_ObjectHideFlags: 0

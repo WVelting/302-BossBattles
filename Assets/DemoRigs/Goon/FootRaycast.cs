@@ -8,7 +8,9 @@ public class FootRaycast : MonoBehaviour
     public float raycastLength = 2;
 
 
-    private float distanceBetweenGroundAndIK = 0;
+    
+
+    ///<summary>The local-space rotation of where the IK spawned</summary>
     private Quaternion startingRot;
 
     ///<summary>The world-space position of the ground above/below the foot IK</summary>
@@ -16,17 +18,44 @@ public class FootRaycast : MonoBehaviour
     ///<summary>The world-space rotation for the foot to be aligned w/ ground</summary>
     private Quaternion groundRotation;
 
+    ///<summary>The local-space position to ease towards.</summary>
+    private Vector3 targetPos;
+
+    ///<summary>The local-space position of where the IK spawned</summary>
+    private Vector3 startingPos;
+
+    private Vector3 footSeparateDir;
     void Start()
     {
-        //the height "y" above the ground plane when the ground plane is set to "0"
-        distanceBetweenGroundAndIK = transform.localPosition.y;
+        
         //local space starting rotation of the foot
         startingRot = transform.localRotation;
+        //local space starting position of IK
+        startingPos = transform.localPosition;
+
+        footSeparateDir = (startingPos.x > 0) ? Vector3.right : Vector3.left;
     }
 
     void Update()
     {
         //FindGround();
+        //ease towards target:
+        transform.localPosition = AniMath.Ease(transform.localPosition, targetPos, .01f);
+    }
+
+    public void SetLocalPosition(Vector3 p)
+    {
+        targetPos = p;
+    }
+
+    public void SendHomePosition()
+    {
+        targetPos = startingPos;
+    }
+
+    public void SetOffsetPosition(Vector3 p, float separateAmount = 0)
+    {
+        targetPos = startingPos + p + separateAmount * footSeparateDir;
     }
 
     private void FindGround()
@@ -39,7 +68,7 @@ public class FootRaycast : MonoBehaviour
         if (Physics.Raycast(origin, direction, out RaycastHit hitInfo, raycastLength))
         {
             //set foot position to space on ground hit by raycast
-            groundPosition = hitInfo.point + Vector3.up * distanceBetweenGroundAndIK;
+            groundPosition = hitInfo.point + Vector3.up * startingPos.y;
             //world-space rotation of the foot  Quaternion multiplication is NOT communitive
             Quaternion worldNeutral = transform.parent.rotation * startingRot;
             //set the rotation of foot to match the slope of the normal hit by the raycast
