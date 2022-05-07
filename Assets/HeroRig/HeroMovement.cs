@@ -26,6 +26,7 @@ public class HeroMovement : MonoBehaviour
     private Quaternion targetRot;
     ///<summary>The current vertical velocity in meters/second</summary>
     private Camera cam;
+    public CameraController camController;
     private Animator anim;
     private Vector3 startingPos;
     private float clipSize = 7;
@@ -110,6 +111,7 @@ public class HeroMovement : MonoBehaviour
         }
 
         velocityY += gravity * Time.deltaTime;
+
         
         if(mode == Mode.Walk || mode == Mode.InAir)
         {
@@ -177,12 +179,10 @@ public class HeroMovement : MonoBehaviour
 
     private void AnimateShoot()
     {
-        
-        torso.transform.localPosition -= new Vector3(0, -.0001f, 0);
-        torso.transform.localPosition = AniMath.Lerp(torso.transform.localPosition, Vector3.zero, .05f);
         if(clipSize > 0)
         {
             Instantiate(bullet, bulletSpawn.position, bulletSpawn.rotation);
+            camController.Shake(.5f);
             clipSize--;
         }
 
