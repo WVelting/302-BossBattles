@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,42 +11,74 @@ public class HeroMovement : MonoBehaviour
     enum Mode{
         Idle,
         Walk,
-        InAir
+        InAir,
+        Aim,
+        Reload,
+        Dead
 
     }
 
-
+    private PointAt target;
     private CharacterController pawn;
     private Mode mode = Mode.Idle;
     private Vector3 input;
     private float walkTime;
     private Quaternion targetRot;
     ///<summary>The current vertical velocity in meters/second</summary>
+    private Camera cam;
+    private Animator anim;
+    private Vector3 startingPos;
+    private float clipSize = 7;
+    private float health = 50;
+    private float deathTimer = 5;
     
 
     public FootRaycast footLeft;
     public FootRaycast footRight;
-    private Camera cam;
+    public Transform torso;
+    public Transform bulletSpawn;
+    public Projectile bullet;
     public float footSeparateScalar = -.2f;
     public float walkSpreadY = .4f;
     public float walkSpreadZ = .8f;
     public float walkFootSpeed = 4;
+    public float reloadTimer = 5;
 
     public float walkSpeed = 5;
     public float velocityY = 0;
     public float gravity = 20;
     public float jumpImpulse = 10;
+    public float v;
+    public float h;
 
     void Start()
     {
         pawn = GetComponent<CharacterController>();   
+        anim = GetComponent<Animator>();
+        target = GetComponent<PointAt>();
         cam = Camera.main; 
+        startingPos = torso.transform.localPosition;
+        AnimateIdle();
     }
 
     void Update()
     {
-        float v = Input.GetAxisRaw("Vertical");
-        float h = Input.GetAxisRaw("Horizontal");
+        if(Input.GetKey(KeyCode.LeftShift)) 
+        {
+            walkSpeed = 10;
+            walkFootSpeed = 8;
+        }
+        else{
+            walkSpeed = 5;
+            walkFootSpeed = 4;
+        }
+        print(mode);
+        //setting up stuff
+        Vector3 vToTarget = transform.position - target.target.position;
+        if(Input.GetMouseButton(1) && vToTarget.sqrMagnitude < target.visionDis*target.visionDis) mode = Mode.Aim;
+        else mode = Mode.Idle;
+        v = Input.GetAxisRaw("Vertical");
+        h = Input.GetAxisRaw("Horizontal");
 
         Vector3 camForward = cam.transform.forward;
         camForward.y = 0;
@@ -58,8 +91,13 @@ public class HeroMovement : MonoBehaviour
 
 
         float threshold = .1f;
-        //set movement mode based on movement input:
-        mode = (input.sqrMagnitude > threshold*threshold) ? Mode.Walk : Mode.Idle;
+
+        if(mode != Mode.Aim && mode != Mode.Dead)
+        {
+            //set movement mode based on movement input:
+            mode = (input.sqrMagnitude > threshold*threshold) ? Mode.Walk : Mode.Idle;
+
+        }
 
         if(mode == Mode.Walk) targetRot = Quaternion.LookRotation(input, Vector3.up);
 
@@ -73,10 +111,16 @@ public class HeroMovement : MonoBehaviour
 
         velocityY += gravity * Time.deltaTime;
         
+        if(mode == Mode.Walk || mode == Mode.InAir)
+        {
         pawn.Move((input * walkSpeed + Vector3.down * velocityY) * Time.deltaTime);
 
+        }
+
         if(pawn.isGrounded) velocityY = 0;
-        else mode = Mode.InAir;
+        else mode = Mode.InAir;     
+        if(Input.GetKeyDown(KeyCode.Q)) health -= 50;
+        if(health<= 0) mode = Mode.Dead;   
         // animate the feet
         Animate();
     }
@@ -95,27 +139,55 @@ public class HeroMovement : MonoBehaviour
         {
             case Mode.Idle:
                 AnimateIdle();
+                anim.SetBool("isIdle", true);
+                anim.SetBool("isAiming", false);
+                if(Input.GetKey(KeyCode.R)) 
+                {
+                    anim.SetBool("isReloading", true);
+                    clipSize = 7;
+                }
+                else anim.SetBool("isReloading", false);
                 break;
             case Mode.Walk:
                 AnimateWalk();
+                anim.SetBool("isAiming", false);
                 break;
-            case Mode.InAir:
-                AnimateInAir();
+            case Mode.Aim:
+                AnimateIdle();
+                anim.SetBool("isIdle", false);
+                anim.SetBool("isAiming", true);
+                anim.SetBool("isReloading", false);
+                if(Input.GetMouseButtonDown(0)) AnimateShoot();
                 break;
+            case Mode.Dead:
+                anim.SetBool("isIdle", false);
+                anim.SetBool("isAiming", false);
+                anim.SetBool("isReloading", false);
+                anim.SetBool("isDead", true);
+                deathTimer -= Time.deltaTime;
+                if(deathTimer <= 0) Destroy(gameObject);
+                break;
+
+                
+                
         }
         
 
     }
 
-    private void AnimateInAir()
+    private void AnimateShoot()
     {
-        //TODO:
+        
+        torso.transform.localPosition -= new Vector3(0, -.0001f, 0);
+        torso.transform.localPosition = AniMath.Lerp(torso.transform.localPosition, Vector3.zero, .05f);
+        if(clipSize > 0)
+        {
+            Instantiate(bullet, bulletSpawn.position, bulletSpawn.rotation);
+            clipSize--;
+        }
 
-        //lift legs
-        //lift hands
-        //adjust spikes/hair
-        //use vertical velocity
     }
+
 
     void AnimateIdle()
     {
