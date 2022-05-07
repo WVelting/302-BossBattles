@@ -73,7 +73,7 @@ public class HeroMovement : MonoBehaviour
             walkSpeed = 5;
             walkFootSpeed = 4;
         }
-        print(mode);
+        //print(mode);
         //setting up stuff
         Vector3 vToTarget = transform.position - target.target.position;
         if(Input.GetMouseButton(1) && vToTarget.sqrMagnitude < target.visionDis*target.visionDis) mode = Mode.Aim;
@@ -113,7 +113,7 @@ public class HeroMovement : MonoBehaviour
         velocityY += gravity * Time.deltaTime;
 
         
-        if(mode == Mode.Walk || mode == Mode.InAir)
+        if(mode == Mode.Walk || mode == Mode.InAir || mode == Mode.Idle)
         {
         pawn.Move((input * walkSpeed + Vector3.down * velocityY) * Time.deltaTime);
 
@@ -169,12 +169,19 @@ public class HeroMovement : MonoBehaviour
                 deathTimer -= Time.deltaTime;
                 if(deathTimer <= 0) Destroy(gameObject);
                 break;
+            case Mode.InAir:
+                AnimateInAir();
+                break;
 
                 
                 
         }
         
 
+    }
+
+    private void AnimateInAir()
+    {
     }
 
     private void AnimateShoot()
