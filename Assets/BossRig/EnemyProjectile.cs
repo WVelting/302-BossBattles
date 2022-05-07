@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class EnemyProjectile : MonoBehaviour
 {
-    private EnemyController enemy;
-    public PointAt target;
+    public HeroMovement enemy;
     public float bulletSpeed = 10;
     public float bulletImpactDis = .05f;
     public float lifeSpan = 10;
 
     void Start()
     {
-        enemy = FindObjectOfType<EnemyController>();
+        enemy = FindObjectOfType<HeroMovement>();
     }
 
     void Update()
@@ -22,10 +21,10 @@ public class Projectile : MonoBehaviour
 
         if((transform.position - enemy.transform.position).sqrMagnitude < bulletImpactDis*bulletImpactDis) 
         {
-            enemy.health -= 10;
+            enemy.health -= .001f;
             Destroy(gameObject);
         }
-        if(lifeSpan <= 0) Destroy(gameObject);
+        if(lifeSpan<= 0) Destroy(gameObject);
         
     }
 }

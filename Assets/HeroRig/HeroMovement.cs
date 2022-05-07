@@ -30,7 +30,6 @@ public class HeroMovement : MonoBehaviour
     private Animator anim;
     private Vector3 startingPos;
     private float clipSize = 7;
-    private float health = 50;
     private float deathTimer = 5;
     
 
@@ -39,6 +38,7 @@ public class HeroMovement : MonoBehaviour
     public Transform torso;
     public Transform bulletSpawn;
     public Projectile bullet;
+    public float health = 50;
     public float footSeparateScalar = -.2f;
     public float walkSpreadY = .4f;
     public float walkSpreadZ = .8f;

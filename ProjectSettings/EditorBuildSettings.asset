@@ -8,4 +8,19 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DemoGuardian.unity
     guid: 8124e5870f4fd4c779e7a5f994e84ad1
+  - enabled: 1
+    path: Assets/Scenes/BossBattle/StartScene.unity
+    guid: 256317cc9c8305b4fa48d301e37130ff
+  - enabled: 1
+    path: Assets/Scenes/BossBattle/YouLose.unity
+    guid: 958d59c86a3f4dc45ad9237d20f90e84
+  - enabled: 1
+    path: Assets/Scenes/BossBattle/YouWin.unity
+    guid: d449b686b860d294a8c676470b26aee9
+  - enabled: 1
+    path: Assets/Scenes/BossBattle/CreditScene.unity
+    guid: 8109095f370e65f41ac0dcff1da5bf63
+  - enabled: 1
+    path: Assets/Scenes/BossBattle/BossBattleProject.unity
+    guid: 6846b4679d8be354aa21583a9a0ad5c1
   m_configObjects: {}

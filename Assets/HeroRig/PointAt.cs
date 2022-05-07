@@ -22,7 +22,7 @@ public class PointAt : MonoBehaviour
     public bool lockAxisX = false; 
     public bool lockAxisY = false; 
     public bool lockAxisZ = false; 
-    public float visionDis = 20;
+    private float visionDis = 30;
 
     private Quaternion startRotation;
     private Quaternion goalRotation;
