@@ -2446,6 +2446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46e4f8ec7ba5fbb43a530272eb0ef7f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camController: {fileID: 0}
   footLeft: {fileID: 8792859399821253525}
   footRight: {fileID: 68514170331750581}
   torso: {fileID: 1176773447}
